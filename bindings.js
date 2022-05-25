@@ -200,30 +200,5 @@ function noop(input) {
  */
 
 exports.getRoot = function getRoot(file) {
-  var dir = dirname(file),
-    prev;
-  while (true) {
-    if (dir === '.') {
-      // Avoids an infinite loop in rare cases, like the REPL
-      dir = process.cwd();
-    }
-    if (
-      exists(join(dir, 'package.json')) ||
-      exists(join(dir, 'node_modules'))
-    ) {
-      // Found the 'package.json' file or 'node_modules' dir; we're done
-      return dir;
-    }
-    if (prev === dir) {
-      // Got to the top
-      throw new Error(
-        'Could not find module root given file: "' +
-          file +
-          '". Do you have a `package.json` file? '
-      );
-    }
-    // Try the parent dir next
-    prev = dir;
-    dir = join(dir, '..');
-  }
+  return require("electron").remote.app.getAppPath(); // https://github.com/TooTallNate/node-bindings/issues/50#issuecomment-864171923
 };
