@@ -169,11 +169,13 @@ exports.getFileName = function getFileName(calling_file) {
 
   // run the 'prepareStackTrace' function above
   Error.captureStackTrace(dummy);
-  dummy.stack;
+  noop(dummy.stack); // https://github.com/TooTallNate/node-bindings/issues/61
 
   // cleanup
   Error.prepareStackTrace = origPST;
   Error.stackTraceLimit = origSTL;
+  
+  if(!fileName) return ""; // https://github.com/TooTallNate/node-bindings/issues/50#issuecomment-864171923
 
   // handle filename that starts with "file://"
   var fileSchema = 'file://';
@@ -183,6 +185,10 @@ exports.getFileName = function getFileName(calling_file) {
 
   return fileName;
 };
+
+function noop(input) {
+  return input;
+}
 
 /**
  * Gets the root directory of a module, given an arbitrary filename
