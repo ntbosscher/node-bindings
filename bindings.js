@@ -200,5 +200,5 @@ function noop(input) {
  */
 
 exports.getRoot = function getRoot(file) {
-  return require("electron").remote.app.getAppPath(); // https://github.com/TooTallNate/node-bindings/issues/50#issuecomment-864171923
+  return require("@electron/remote").app.getAppPath(); // https://github.com/TooTallNate/node-bindings/issues/50#issuecomment-864171923
 };
