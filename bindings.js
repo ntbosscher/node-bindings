@@ -190,6 +190,8 @@ function noop(input) {
   return input;
 }
 
+let rootOverride = null;
+
 /**
  * Gets the root directory of a module, given an arbitrary filename
  * somewhere in the module tree. The "root directory" is the directory
@@ -198,7 +200,23 @@ function noop(input) {
  *   In:  /home/nate/node-native-module/lib/index.js
  *   Out: /home/nate/node-native-module
  */
-
 exports.getRoot = function getRoot(file) {
+  if(rootOverride) return rootOverride(file);
   return require("@electron/remote").app.getAppPath(); // https://github.com/TooTallNate/node-bindings/issues/50#issuecomment-864171923
 };
+
+/**
+ * configure allows callers to set some properties before calling getRoot()
+ * or getFileName().
+ * 
+ *  In: {
+ *     // overrides response to getRoot() - helpful for custom build 
+ *     // destinations (e.g. .asar.unpacked)
+ *     root: "string" | "function(file) => string"
+ *  }
+ */
+exports.configure = function(input) {
+  const {root} = input;
+  if(typeof root === "function") rootOverride = root;
+  rootOverride = () => root;
+}
